@@ -9,7 +9,11 @@ type userSettingsData = {
 };
  
 function UserSettings() {
-    const [data, setData] = useState<userSettingsData>();
+    const [data, setData] = useState<userSettingsData>({
+        friends: [],
+        bandUsers: [],
+        invitations : []
+    });
     
     const fetchInfo = () => { 
         return fetch("http://localhost:5000/Chat/userSettings", {
@@ -19,7 +23,7 @@ function UserSettings() {
                 .then((res) => res.json()) 
                 .then((d) => 
                 {
-                    setData(d)
+                    setData(d.data)
                     console.log(d);
                 }).catch((error) => {
                     console.error('Error:', error);
@@ -28,12 +32,14 @@ function UserSettings() {
         
         useEffect(() => {
             fetchInfo();
-        }, [])
+            console.log(data?.friends);
+        }, [data])
+        
     return (
             <div className="h-full w-full flex flex-row items-center justify-around">
-                <Card/>
-                <Card/>
-                <Card/>
+                <Card data={data?.friends} title="Friends"/>
+                <Card data={data?.bandUsers} title="BandUsers"/>
+                <Card data={data?.invitations} title="Invitations"/>
             </div>
     );
 }
