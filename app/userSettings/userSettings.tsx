@@ -3,6 +3,7 @@ import Card from "./Card";
 import React, { useEffect, useState } from 'react';
 
 type userSettingsData = {
+    user :      string;
     invitations : string[];
     friends     : string[];
     bandUsers   : string[];
@@ -10,6 +11,7 @@ type userSettingsData = {
  
 function UserSettings() {
     const [data, setData] = useState<userSettingsData>({
+        user: "",
         friends: [],
         bandUsers: [],
         invitations : []
@@ -37,9 +39,9 @@ function UserSettings() {
         
     return (
             <div className="h-full w-full flex flex-row items-center justify-around">
-                <Card data={data?.friends} title="Friends"/>
-                <Card data={data?.bandUsers} title="BandUsers"/>
-                <Card data={data?.invitations} title="Invitations"/>
+                <Card data={data?.friends} title="Friends" user={data?.user}/>
+                <Card data={data?.bandUsers} title="BandUsers" user={data?.user}/>
+                <Card data={data?.invitations} title="Invitations" user={data?.user}/>
             </div>
     );
 }
