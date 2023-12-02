@@ -31,7 +31,7 @@ function Card(props : CardData) {
       let myMap = new Map<string, string>();
       myMap.set("BandUsers","unBanUser");
       myMap.set("Invitations","accepteInvite");
-      myMap.set("Invitations","accepteInvite");
+      myMap.set("Invitationsx","deleteInvite");
       myMap.set("Friends","removeFriend");
     return (
         <div className="w-[20%] h-[30%] flex flex-col m-5 p-5 bg-[#30313E] items-center rounded-md">
@@ -44,8 +44,8 @@ function Card(props : CardData) {
                 return (
                     <div className="w-full flex flex-row justify-between">
                         <p>{user}</p>
-                        {/* <button className="text-red-600" onClick={handleClick(myMap.get(props.title), user)}>X</button> */}
-                        <button className="text-red-600" onClick={() => handleClick(myMap.get(props.title), user)}>X</button>
+                        {props.title != "Invitations" && <button className="text-red-600" onClick={() => handleClick(myMap.get(props.title), user)}>X</button>}
+                        {props.title == "Invitations" && <button className="text-red-600" onClick={() => handleClick(myMap.get(`${props.title}x`), user)}>X</button>}
                         {props.title == "Invitations" && <button className="text-red-600" onClick={() => handleClick(myMap.get(props.title), user)}>Y</button>}
                         
                     </div>
