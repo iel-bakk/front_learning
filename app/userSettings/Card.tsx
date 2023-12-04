@@ -1,3 +1,4 @@
+import Modal from "../components/modal"
 import React from "react";
 
 type CardData = {
@@ -37,10 +38,10 @@ function Card(props : CardData) {
         <div className="w-[20%] h-[30%] flex flex-col m-5 p-5 bg-[#30313E] items-center rounded-md">
             <div className="w-full flex flex-row justify-around">
                 <h3>{props.title}</h3>
-                <button className="text-red-600 text-xl" onClick={() => handleClick(`${myMap.get(props.title)}+`, props.user)}>+</button>
+                {props.title != "Friends" && <Modal content="+" title={props.title}/>}
             </div>
             <div className=" h-full w-full flex flex-col justify-between">
-             {props.data.map((user)=> {
+             {props?.data?.length && props?.data.map((user)=> {
                 return (
                     <div className="w-full flex flex-row justify-between">
                         <p>{user}</p>
