@@ -56,7 +56,7 @@ const initialState = {
 } as any;
   export const fetchInfos = createAsyncThunk("user/fetch", async (thunkApi) => {
   try {
-    const response = await axios.get('http://localhost:5000/Profile', {withCredentials: true });
+    const response = await axios.get('http://localhost:4000/Profile', {withCredentials: true });
 
     if (response.status === 200) {
       console.log('Data getted successfully:', response.data);
@@ -70,7 +70,7 @@ const initialState = {
   })
 
 // export const fetchInfos = createAsyncThunk("user/fetch", async (thunkApi) => {
-//   const response = await fetch("http://localhost:5000/Profile", {
+//   const response = await fetch("http://localhost:4000/Profile", {
 //     method: "GET",
 //     credentials: 'include',
 //   });

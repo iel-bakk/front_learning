@@ -18,7 +18,7 @@ function UserSettings() {
     });
     
     const fetchInfo = () => { 
-        return fetch("http://localhost:5000/Chat/userSettings", {
+        return fetch("http://localhost:4000/Chat/userSettings", {
             method : "GET",
             credentials : 'include'
         }) 
