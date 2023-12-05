@@ -10,31 +10,11 @@ const Modal = (props: ModalType) => {
   const [message, setMessage] = useState('');
   const [showButton, setShowButton] = useState(false);
 
-    const handleChange = (event) => {
+    const handleChange = (event: any) => {
       setMessage(event.target.value);
   
       console.log('value is:', event.target.value);
     };
-    // async function handleClick(endpoint: string | undefined) {
-    //   setShowModal(false);
-    //   if (!endpoint)
-    //     return
-      
-    //   const bodyData  = {
-    //       username : message // use message state variable as username
-    //   }
-    //   console.log(`http://localhost:4000/Chat/${endpoint}`);
-      
-    //   let response = await fetch(`http://localhost:4000/Chat/${endpoint}`, {  // Enter your IP address here
-    //     method: 'POST', 
-    //     mode: 'cors',
-    //     credentials : 'include',
-    //     headers: {
-    //       'Content-Type': 'application/json',
-    //     },
-    //     body: JSON.stringify(bodyData) // body data type must match "Content-Type" header
-    //   })
-    // } 
     let alert : string = "";
     async function handleClick(endpoint: string | undefined) {
       setShowModal(false);

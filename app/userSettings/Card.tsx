@@ -12,21 +12,19 @@ function Card(props : CardData) {
     function handleClick(endpoint: string | undefined, username: string) {
         if (!endpoint)
           return
-        // Create an object with the username
         const bodyData = {
           username: username
         };
-        // Send data to the backend via POST
         console.log(`http://localhost:4000/Chat/${endpoint}`);
         
-        fetch(`http://localhost:4000/Chat/${endpoint}`, {  // Enter your IP address here
+        fetch(`http://localhost:4000/Chat/${endpoint}`, {
           method: 'POST', 
           mode: 'cors',
           credentials : 'include',
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify(bodyData) // body data type must match "Content-Type" header
+          body: JSON.stringify(bodyData)
         })
       }
       let myMap = new Map<string, string>();

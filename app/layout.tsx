@@ -37,7 +37,7 @@ export default function RootLayout({
     }
     console.log(isOpen);
 
-    if (router !== '/chat' && router !== '/profile' && router !== '/setting' && router !== '/rank' && router !== '/game' && router !== '/2FaValidation' && router !== '/login' && router !== '/userSettings') {
+    if (router !== '/chat' && router !== '/profile' && router !== '/setting' && router !== '/rank' && router !== '/game' && router !== '/2FaValidation' && router !== '/login' && router !== '/userSettings' && router!=='/channel') {
       return <NotFoud404/>;
     } 
     if (router === '/2FaValidation' || router === '/login')
