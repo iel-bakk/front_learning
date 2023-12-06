@@ -1,6 +1,6 @@
 import React from "react";
 import Navbar from "@/app/components/Navbar";
-import ChannelChat from "./channels";
+import ChannelChat from "./channels.client";
 
 export default function Channels() {
   
