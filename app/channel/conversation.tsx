@@ -1,20 +1,24 @@
-import { ClassNames } from '@emotion/react';
 import React from 'react';
-import { Channels } from './channels';
 
+interface ConversationProps {
+ channelNames: string[] | undefined;
+}
 
-
-function Conversation(props : Channels) {
-    console.log("testing ----> ", props);
+function Conversation(props: ConversationProps) {
+    if (!props.channelNames) {
+        return <div>Loading...</div>;
+    }
+    console.log("test : ", props.channelNames);
+    
     return (
-        <div className='w-full h-full text-white'>
-            {props.channelNames?.map((channel, index) => {
-                return (
-                    <div key={index}><span>{channel}</span></div>
-                );
-            })}
-        </div>
-    );
+      <div className='w-full h-full text-white flex flex-col items-center'>
+          {props?.channelNames.map((channel, index) => {
+          return (
+              <div key={index}><span><p>{channel}</p></span></div>
+          );
+          })}
+      </div>
+  );
 }
 
 export default Conversation;

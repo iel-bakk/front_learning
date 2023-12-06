@@ -3,22 +3,15 @@ import React, { useEffect, useState } from 'react';
 import Conversation from './conversation';
 
 
-export type Channels = {
-    channelNames : string[];
+type channelNames = {
+   channelNames:string[],
 };
 
-type channelsData = {
-    user :      string;
-    invitations : string[];
-    friends     : string[];
-    bandUsers   : string[];
-};
  
 function ChannelChat() {
-    const [data, setData] = useState<Channels>({
-        channelNames : []
-    });
-    
+    const [channelNames, setData] = useState<channelNames>();
+
+     
     const fetchInfo = async () => { 
         return await fetch("http://localhost:4000/Chat/channel", {
             method : "GET",
@@ -27,7 +20,7 @@ function ChannelChat() {
                 .then((res) => res.json()) 
                 .then((d) => 
                 {
-                    setData(d.data)
+                    setData(d)
                     console.log("------> {" , d, "}");
                 }).catch((error) => {
                     console.error('Error:', error);
@@ -36,15 +29,16 @@ function ChannelChat() {
         
         useEffect(() => {
             fetchInfo();
-        }, [data])
+        }, [channelNames])
+
+        // console.log("hhhhhhhh =====> :" , channelNames.channelNames);
         
-        // console.log("data checking ===> ", data.channelNames);
     
     return (
             <div className="h-[80%] w-full flex flex-row items-center justify-around">
                 <div className=' w-[30%] h-full flex flex-col items-center rounded-lg border border-[#E58E27]'>
                     <h3 className='p-4'>conversations</h3>
-                   <Conversation channelNames={data?.channelNames}/>
+                    <Conversation channelNames={channelNames?.channelNames} />
                 </div>
                 <div className=' w-[60%] h-full flex flex-col items-center rounded-lg border border-[#E58E27]'>
                     <h3 className='p-4'>chat</h3>
