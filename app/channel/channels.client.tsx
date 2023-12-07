@@ -66,7 +66,7 @@ function ChannelChat() {
    <div className='w-full h-full text-white flex flex-col items-center overflow-y-auto scrollbar-hide'>
        {channelNames && channelNames?.channelNames.map((channel, index) => {
            return (
-             <div className='w-full h-full text-center bg-gray-500 p-4 border border-[#E58E27]' key={index} style={{cursor: 'pointer'}} onClick={() => handleClick(channel)}>{channel}</div>
+             <div className='w-full text-center bg-gray-400 p-4 border border-[#E58E27]' key={index} style={{cursor: 'pointer'}} onClick={() => handleClick(channel)}>{channel}</div>
            );
        })}
    </div>
@@ -74,9 +74,9 @@ function ChannelChat() {
 
     <div className='overflow-hidden w-[60%]  h-full flex flex-col items-center rounded-lg border border-[#E58E27] relative'>
         <div className='w-full text-center border border-[#E58E27]'><h3 className='p-4'>{ChoosenChannel}</h3></div>
-        <div>
+        <div className='w-full h-full flex flex-col'>
             {messages && messages.map((message, index) => (
-                <div key={index} className="w-full h-full flex flex-row justify-around p-4 overflow-y-auto scrollbar-hide">
+                <div key={index} className="flex flex-row w-[50%] rounded-lg justify-around bg-gray-400 p-2 m-4 border border-[#E58E27] overflow-y-auto scrollbar-hide">
                   <p>{message.sender}</p>
                   <p>{message.content}</p>
                 </div>
