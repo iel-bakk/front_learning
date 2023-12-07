@@ -66,7 +66,7 @@ function ChannelChat() {
    <div className='w-full h-full text-white flex flex-col items-center overflow-y-auto scrollbar-hide'>
        {channelNames && channelNames?.channelNames.map((channel, index) => {
            return (
-             <div className='w-full text-center bg-gray-400 p-4 border border-[#E58E27]' key={index} style={{cursor: 'pointer'}} onClick={() => handleClick(channel)}>{channel}</div>
+             <div className='w-full text-center bg-[#E58E27] p-2 rounded-lg m-2 border border-[#E58E27]' key={index} style={{cursor: 'pointer'}} onClick={() => handleClick(channel)}>{channel}</div>
            );
        })}
    </div>
@@ -76,14 +76,14 @@ function ChannelChat() {
         <div className='w-full text-center border border-[#E58E27]'><h3 className='p-4'>{ChoosenChannel}</h3></div>
         <div className='w-full h-full flex flex-col'>
             {messages && messages.map((message, index) => (
-                <div key={index} className="flex flex-row w-[50%] rounded-lg justify-around bg-gray-400 p-2 m-4 border border-[#E58E27] overflow-y-auto scrollbar-hide">
+                <div key={index} className="flex flex-row w-[50%] rounded-lg justify-around bg-[#323232] p-2 m-4  overflow-y-auto scrollbar-hide">
                   <p>{message.sender}</p>
                   <p>{message.content}</p>
                 </div>
             ))}
         </div>
         <div className='absolute bottom-0 w-full flex-end rounded-lg border  border-black flex'>
-          <input className="w-full text-black rounded-lg border border-black"/>
+          <input className="w-full text-black rounded-lg border border-black bg-[#323232] text-white p-4"/>
           <button className="w-1/10 bg-orange-500 hover:bg-orange-700 text-white font-bold py-2 px-4 rounded">
             Send
           </button>
