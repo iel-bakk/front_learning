@@ -20,10 +20,17 @@ function ChannelChat() {
  const [messages, setMessages] = useState<channelMessages[]>([]);
  const [ChoosenChannel, SetChoosenChannel] = useState<string>("Channel Name");
  const [inputValue, setInputValue] = useState('');
-  socket.on("channelMessage", res=>{
-    setChannelMessages(res.data)
-    console.log(res);
-  })
+ 
+ useEffect(() => {
+  socket.on("channelMessage", res => {
+    let newMessages : channelMessages[] = messages;
+    console.log("recieved an event ", res);
+    newMessages.push(res);
+    setMessages(messages => [...messages, res]);
+  });
+ }, []); // Empty dependency array
+ 
+ 
  async function handleClick(name: string) {
      console.log(`http://localhost:4000/Chat/channel`);
      let response = await fetch(`http://localhost:4000/Chat/channel`, {
@@ -83,10 +90,10 @@ function ChannelChat() {
     <div className='overflow-hidden w-[60%]  h-full flex flex-col items-center rounded-lg border border-[#E58E27] relative'>
         <div className='w-full text-center border border-[#E58E27]'><h3 className='p-4'>{ChoosenChannel}</h3></div>
         <div className='w-full h-full flex flex-col overflow-y-auto scrollbar-hide'>
-            {messages && messages.map((message, index) => (
+            {messages && messages?.map((message, index) => (
                 <div key={index} className="flex flex-row w-[50%] rounded-lg justify-around bg-[#323232] p-2 m-4">
-                  <p>{message.sender} :</p>
-                  <p>{message.content}</p>
+                  <p>{message?.sender} :</p>
+                  <p>{message?.content}</p>
                 </div>
             ))}
         </div>
@@ -97,26 +104,19 @@ function ChannelChat() {
          onChange={(e) => setInputValue(e.target.value)}
        />
        <button 
- className="w-1/10 bg-orange-500 hover:bg-orange-700 text-white font-bold py-2 px-4 rounded"
- onClick={() => {
-   const newMessage = {
-     sender: channelNames.username, // replace 'Your Name' with the actual sender's name
-     content: inputValue,
-     channelName: ChoosenChannel,
-   };
-   setMessages((prevMessages) => [...prevMessages, newMessage]);
-   socket.emit('channelMessage', newMessage);
- }}
->
- Send
-</button>
-
-       {/* <button 
-         className="w-1/10 bg-orange-500 hover:bg-orange-700 text-white font-bold py-2 px-4 rounded"
-         onClick={() => socket.emit('channelMessage', { content: inputValue, channelName : ChoosenChannel })}
-       >
-         Send
-       </button> */}
+      className="w-1/10 bg-orange-500 hover:bg-orange-700 text-white font-bold py-2 px-4 rounded"
+      onClick={() => {
+      const newMessage = {
+        sender: channelNames.username, // replace 'Your Name' with the actual sender's name
+        content: inputValue,
+        channelName: ChoosenChannel,
+      };
+    setMessages((prevMessages) => [...prevMessages, newMessage]);
+     socket.emit('channelMessage', newMessage);
+  }}
+  >
+     Send
+  </button>
         </div>
     </div>
    </div>
