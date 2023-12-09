@@ -5,7 +5,7 @@ import { useSelector } from "react-redux";
 import { RootState, AppDispatch } from "../store/store";
 import { useDispatch } from "react-redux";
 import { addMessageToChannel, fetchChannelData, updateChannelMessages } from '../Slices/channelMessagesSlice';
-
+import Link from 'next/link';
 
 type channelNames = {
   channels: channelConversation[],
@@ -28,9 +28,12 @@ function ChannelChat() {
   const [channelToRender, setChannelData] = useState<channelConversation>({ channelName: "", messages: [] });
   const [ChoosenChannel, SetChoosenChannel] = useState<string>();
   const [inputValue, setInputValue] = useState('');
+  const [redirecting, setRedirection] = useState<boolean>(false);
   const dispatch = useDispatch<AppDispatch>();
+
   let channelData: channelNames = useSelector((state: RootState) => state.channelMessages.entity);
  
+
   const handleChannelMessage = useCallback((res : channelMessages) => {
     console.log(res);
     dispatch(addMessageToChannel(res));
@@ -71,10 +74,13 @@ function ChannelChat() {
     console.log("data : ", data);
     dispatch(updateChannelMessages({ channelName: name, messages: data}));
     SetChoosenChannel(name);
-
-    // setChannelData(data)
   }
-
+  if (redirecting)
+    return (
+      <div className='w-full h-full flex justify-center items-center text-orange-500'>
+        <h1  >Redirecting to Profile ... Please Wait ...</h1>
+      </div>
+  )
  return (
     <div className="relative h-[80%] w-full flex flex-row md:flex-col items-center justify-around p-5">
     <div className=' w-[30%] h-full flex flex-col items-center rounded-lg border border-[#E58E27]'>
@@ -82,7 +88,7 @@ function ChannelChat() {
    <div className='w-full h-full text-white flex flex-col items-center overflow-y-auto scrollbar-hide'>
        {channelData && channelData.channels.map((channel, index) => {
            return (
-             <div className='w-full text-center bg-[#E58E27] p-2 rounded-lg m-2 border border-[#E58E27]' key={index} style={{cursor: 'pointer'}} onClick={() => handleClick(channel.channelName)}>{channel.channelName}</div>
+             <div className='w-full text-center bg-[#E58E27] bg-opacity-50 p-2 rounded-lg m-2 border border-[#E58E27]' key={index} style={{cursor: 'pointer'}} onClick={() => handleClick(channel.channelName)}>{channel.channelName}</div>
            );
        })}
         </div>
@@ -92,9 +98,9 @@ function ChannelChat() {
         <div className='w-full text-center border border-[#E58E27]'><h3 className='p-4'>{ChoosenChannel}</h3></div>
         <div className='w-full h-[80%] flex flex-col overflow-y-auto scrollbar-hide'>
         {channelToRender && Array.isArray(channelToRender.messages) && channelToRender.messages.map((channel, index) => (
-          <div key={index} className={`flex flex-row w-[50%] rounded-lg bg-[#323232] p-2 m-4 object-contain  ${channel.sender === channelData.username ? 'message-sender self-start' : 'message-other self-end justify-end'}`}>
-              <p>{channel?.sender} :</p>
-              <p>{channel?.content}</p>
+          <div key={index} className={`flex flex-row w-[50%] rounded-lg p-2 m-4 object-contain  ${channel.sender === channelData.username ? 'message-sender bg-[#E58E27] self-start bg-opacity-50' : 'message-other bg-[#323232] self-end justify-end bg-opacity-50'}`}>
+                <Link href={'/profile'}><p>{channel?.sender} :</p></Link>
+                <p>{channel?.content}</p>
           </div>
         ))}
 
