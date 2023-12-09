@@ -1,5 +1,5 @@
 'use client';
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { WebsocketContext } from '../Contexts/socket';
 import { useSelector } from "react-redux";
 import { RootState, AppDispatch } from "../store/store";
@@ -26,60 +26,54 @@ type channelConversation = {
 
 function ChannelChat() {
   const socket = useContext(WebsocketContext);
-//  const [channelNames, setData] = useState<channelNames>();
- const [channelMessages, setChannelMessages] = useState<channelMessages>();
- const [channelToRender, setChannelData] = useState<channelConversation>();
- const [messages, setMessages] = useState<channelMessages[]>([]);
- const [ChoosenChannel, SetChoosenChannel] = useState<string>("Channel Name");
- const [inputValue, setInputValue] = useState('');
- const dispatch = useDispatch<AppDispatch>();
- let channelData: channelNames = useSelector((state: RootState) => state.channelMessages.entity);
+  const [channelToRender, setChannelData] = useState<channelConversation>({ channelName: "", messages: [] });
+  const [ChoosenChannel, SetChoosenChannel] = useState<string>("Channel Name");
+  const [inputValue, setInputValue] = useState('');
+  const dispatch = useDispatch<AppDispatch>();
+  let channelData: channelNames = useSelector((state: RootState) => state.channelMessages.entity);
  
- console.log("afdaf : ", channelData);
+  const handleChannelMessage = useCallback((res : channelMessages) => {
+    console.log("received message ", res);
+    dispatch(addMessageToChannel(res));
+  }, [dispatch]);
  
- useEffect(() => {
-  const handleChannelMessage = (res : channelMessages) => {
-   console.log("received message ", res);
-   dispatch(addMessageToChannel(res)), [ChoosenChannel]
-}
+  useEffect(() => {
+    if (!socket.hasListeners("channelMessage")) {
+      socket.on("channelMessage", handleChannelMessage);
+    }
  
-  // Check if the event listener has already been added
-  if (!socket.hasListeners("channelMessage")) {
-   socket.on("channelMessage", handleChannelMessage);
-  }
+    return () => {
+      socket.off("channelMessage", handleChannelMessage);
+    };
+  }, [socket, handleChannelMessage]);
  
-  // Cleanup function to remove the event listener when the component is unmounted
-  return () => {
-   socket.off("channelMessage", handleChannelMessage);
-  };
- }, []);
- 
- useEffect(() => {
+  useEffect(() => {
     dispatch(fetchChannelData());
-}, []);
+  }, [dispatch]);
  
-useEffect(() => {
-  const channelToRender = channelData.channels.find(channel => channel.channelName === ChoosenChannel);
-  setChannelData(channelToRender);
-}, [ChoosenChannel]);
+  useEffect(() => {
+    const channelToRender = channelData.channels.find(channel => channel.channelName === ChoosenChannel) || { channelName: "", messages: [] };
+    setChannelData(channelToRender);
+  }, [channelData, ChoosenChannel]);
+  
  
- async function handleClick(name: string) {
-     console.log(`http://localhost:4000/Chat/channel`);
-     let response = await fetch(`http://localhost:4000/Chat/channel`, {
-         method: 'POST', 
-         mode: 'cors',
-         credentials : 'include',
-         headers: {
-             'Content-Type': 'application/json',
-         },
-         body: JSON.stringify({"_channel" : name})
-     })
-     const data = await response.json();
-     
-     dispatch(updateChannelMessages({ channelName: name, messages: data as channelMessages[] }));
-     
-     SetChoosenChannel(name);
- }
+  async function handleClick(name: string) {
+    let response = await fetch(`http://localhost:4000/Chat/channel`, {
+      method: 'POST', 
+      mode: 'cors',
+      credentials : 'include',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({"_channel" : name})
+    })
+    const data = await response.json();
+ 
+    dispatch(updateChannelMessages({ channelName: name, messages: data as channelMessages[] }));
+ console.log(";aybe recieved when post  : ",data);
+ 
+    SetChoosenChannel(name);
+  }
 
  return (
     <div className="relative h-[80%] w-full flex flex-row md:flex-col items-center justify-around p-5">
@@ -97,12 +91,13 @@ useEffect(() => {
     <div className='overflow-hidden w-[60%]  h-full flex flex-col items-center rounded-lg border border-[#E58E27] relative'>
         <div className='w-full text-center border border-[#E58E27]'><h3 className='p-4'>{ChoosenChannel}</h3></div>
         <div className='w-full h-full flex flex-col overflow-y-auto scrollbar-hide'>
-        {channelToRender?.messages && channelToRender.messages.map((channel, index) => (
-          <div key={index} className="flex flex-row w-[50%] rounded-lg justify-around bg-[#323232] p-2 m-4 object-contain">
-          <p>{channel?.sender} :</p>
-          <p>{channel?.content}</p>
-          </div>
-        ))}
+        {channelToRender && Array.isArray(channelToRender.messages) && channelToRender.messages.map((channel, index) => (
+ <div key={index} className="flex flex-row w-[50%] rounded-lg justify-around bg-[#323232] p-2 m-4 object-contain">
+   <p>{channel?.sender} :</p>
+   <p>{channel?.content}</p>
+ </div>
+))}
+
 
         </div>
         <div className='absolute bottom-0 w-full flex-end rounded-lg border  border-black flex'>
