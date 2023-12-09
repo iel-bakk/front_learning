@@ -35,6 +35,11 @@ function ChannelChat() {
   const handleChannelMessage = useCallback((res : channelMessages) => {
     console.log("received message ", res);
     dispatch(addMessageToChannel(res));
+    channelData.channels.map((channel)=> {
+      if (channel.channelName == res.channelName)
+        console.log(channel.messages);
+        
+    })
   }, [dispatch]);
  
   useEffect(() => {

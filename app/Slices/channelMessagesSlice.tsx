@@ -1,5 +1,6 @@
 import { createAsyncThunk ,createSlice, PayloadAction } from '@reduxjs/toolkit'
-import store from '../store/store';
+import { STATUS_CODES } from 'http';
+import store from "../store/store"
 
 type channelNames = {
     channels: channelConversation[],
@@ -54,8 +55,9 @@ const channelMessagesSlice = createSlice({
       },
       addMessageToChannel : (state, action) => {
         const message: channelMessages  = action.payload;
-        const channel = state.entity.channels.find(channel => channel.channelName === message.channelName);
-        channel?.messages.push(message)
+        // state.entity.channels
+      state.entity.channels.find(channel => channel.channelName === message.channelName)?.messages.push(message);      
+        
       }
   },
   extraReducers: (builder) => {
