@@ -39,12 +39,13 @@ function ChannelChat() {
  
   useEffect(() => {
     if (!socket.hasListeners("channelMessage")) {
+
       socket.on("channelMessage", handleChannelMessage);
     }
  
-    return () => {
-      socket.off("channelMessage", handleChannelMessage);
-    };
+    // return () => {
+    //   socket.off("channelMessage", handleChannelMessage);
+    // };
   }, [socket, handleChannelMessage]);
  
   useEffect(() => {
@@ -70,7 +71,7 @@ function ChannelChat() {
     const data = await response.json();
  
     dispatch(updateChannelMessages({ channelName: name, messages: data as channelMessages[] }));
- console.log(";aybe recieved when post  : ",data);
+ console.log("maybe recieved when post  : ",data);
  
     SetChoosenChannel(name);
   }
