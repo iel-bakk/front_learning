@@ -50,14 +50,20 @@ const channelMessagesSlice = createSlice({
         const { channelName, messages } = action.payload;
         const channel = state.entity.channels.find(channel => channel.channelName === channelName);
         if (channel) {
+          console.log("data recieved : ", messages.length);
+          
+          console.log("old array : ", channel.messages.length);  
           channel.messages = messages;
+          // console.log("updated chat from post : ", channel?.messages);
+          console.log("new array : ", channel.messages);
         }
+        
       },
       addMessageToChannel : (state, action) => {
         const message: channelMessages  = action.payload;
-        // state.entity.channels
-      state.entity.channels.find(channel => channel.channelName === message.channelName)?.messages.push(message);      
-        
+        console.log('got here ....');
+        state.entity.channels.find(channel => channel.channelName === message.channelName)?.messages.push(message);  
+        console.log(state.entity.channels);
       }
   },
   extraReducers: (builder) => {

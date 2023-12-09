@@ -5,7 +5,6 @@ import { useSelector } from "react-redux";
 import { RootState, AppDispatch } from "../store/store";
 import { useDispatch } from "react-redux";
 import { addMessageToChannel, fetchChannelData, updateChannelMessages } from '../Slices/channelMessagesSlice';
-import Channels from './page';
 
 
 type channelNames = {
@@ -27,32 +26,27 @@ type channelConversation = {
 function ChannelChat() {
   const socket = useContext(WebsocketContext);
   const [channelToRender, setChannelData] = useState<channelConversation>({ channelName: "", messages: [] });
-  const [ChoosenChannel, SetChoosenChannel] = useState<string>("Channel Name");
+  const [ChoosenChannel, SetChoosenChannel] = useState<string>();
   const [inputValue, setInputValue] = useState('');
   const dispatch = useDispatch<AppDispatch>();
   let channelData: channelNames = useSelector((state: RootState) => state.channelMessages.entity);
  
   const handleChannelMessage = useCallback((res : channelMessages) => {
-    console.log("received message ", res);
+    console.log(res);
     dispatch(addMessageToChannel(res));
-    channelData.channels.map((channel)=> {
-      if (channel.channelName == res.channelName)
-        console.log(channel.messages);
-        
-    })
+    setChannelData((prevChannelData) => {
+      return { ...prevChannelData, messages: [...prevChannelData.messages, res] };
+    });
   }, [dispatch]);
- 
-  useEffect(() => {
-    if (!socket.hasListeners("channelMessage")) {
+  
 
-      socket.on("channelMessage", handleChannelMessage);
-    }
- 
-    // return () => {
-    //   socket.off("channelMessage", handleChannelMessage);
-    // };
-  }, [socket, handleChannelMessage]);
- 
+
+    useEffect (() => {
+      if (!socket.hasListeners("channelMessage")) {
+        socket.on("channelMessage", handleChannelMessage);
+        console.log("current data : ", channelData);
+      }
+    }, [socket]); 
   useEffect(() => {
     dispatch(fetchChannelData());
   }, [dispatch]);
@@ -60,9 +54,9 @@ function ChannelChat() {
   useEffect(() => {
     const channelToRender = channelData.channels.find(channel => channel.channelName === ChoosenChannel) || { channelName: "", messages: [] };
     setChannelData(channelToRender);
+    console.log("channel to render : ",channelToRender);
   }, [channelData, ChoosenChannel]);
   
- 
   async function handleClick(name: string) {
     let response = await fetch(`http://localhost:4000/Chat/channel`, {
       method: 'POST', 
@@ -73,12 +67,12 @@ function ChannelChat() {
       },
       body: JSON.stringify({"_channel" : name})
     })
-    const data = await response.json();
- 
-    dispatch(updateChannelMessages({ channelName: name, messages: data as channelMessages[] }));
- console.log("maybe recieved when post  : ",data);
- 
+    const data : channelConversation = await response.json() as channelConversation;
+    console.log("data : ", data);
+    dispatch(updateChannelMessages({ channelName: name, messages: data}));
     SetChoosenChannel(name);
+
+    // setChannelData(data)
   }
 
  return (
@@ -96,11 +90,11 @@ function ChannelChat() {
 
     <div className='overflow-hidden w-[60%]  h-full flex flex-col items-center rounded-lg border border-[#E58E27] relative'>
         <div className='w-full text-center border border-[#E58E27]'><h3 className='p-4'>{ChoosenChannel}</h3></div>
-        <div className='w-full h-full flex flex-col overflow-y-auto scrollbar-hide'>
+        <div className='w-full h-[80%] flex flex-col overflow-y-auto scrollbar-hide'>
         {channelToRender && Array.isArray(channelToRender.messages) && channelToRender.messages.map((channel, index) => (
- <div key={index} className="flex flex-row w-[50%] rounded-lg justify-around bg-[#323232] p-2 m-4 object-contain">
-   <p>{channel?.sender} :</p>
-   <p>{channel?.content}</p>
+          <div key={index} className="flex flex-row w-[50%] rounded-lg justify-around bg-[#323232] p-2 m-4 object-contain">
+          <p>{channel?.sender} :</p>
+          <p>{channel?.content}</p>
  </div>
 ))}
 
