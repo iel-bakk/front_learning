@@ -92,11 +92,11 @@ function ChannelChat() {
         <div className='w-full text-center border border-[#E58E27]'><h3 className='p-4'>{ChoosenChannel}</h3></div>
         <div className='w-full h-[80%] flex flex-col overflow-y-auto scrollbar-hide'>
         {channelToRender && Array.isArray(channelToRender.messages) && channelToRender.messages.map((channel, index) => (
-          <div key={index} className="flex flex-row w-[50%] rounded-lg justify-around bg-[#323232] p-2 m-4 object-contain">
-          <p>{channel?.sender} :</p>
-          <p>{channel?.content}</p>
- </div>
-))}
+          <div key={index} className={`flex flex-row w-[50%] rounded-lg bg-[#323232] p-2 m-4 object-contain  ${channel.sender === channelData.username ? 'message-sender self-start' : 'message-other self-end justify-end'}`}>
+              <p>{channel?.sender} :</p>
+              <p>{channel?.content}</p>
+          </div>
+        ))}
 
 
         </div>

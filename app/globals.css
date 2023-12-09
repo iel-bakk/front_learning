@@ -41,3 +41,14 @@ body {
     border-radius: 10px;
     
     }
+
+
+    .message-sender {
+      /* styles for the sender's message */
+      background-color: #e58e27;
+    }
+    
+    .message-other {
+      /* styles for other users' messages */
+      background-color: #232e33;
+    }
