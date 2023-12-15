@@ -1,30 +1,46 @@
 import React, { useState } from "react";
 
 
+export type channelSearchType = {
+  name : string;
+  isProtected: boolean;
+};
+
 const ChannelSearch = () => {
-    const [channelToJoin, SetChannelToJoin] = useState<string>('')
+    const [channelToJoin, SetChannelToJoin] = useState<string>("")
     const [showModal, setShowModal] = useState<boolean>(false);
-    const [message, setMessage] = useState<string>('');
+    const [message, setMessage] = useState<string>("");
     const [showButton, setShowButton] = useState<boolean>(false);
-    const [searchData, setSearchData] = useState<string[]>([]);
-    const SendJoin = async () => {
-        let response = await fetch(`http://localhost:4000/Chat/joinChannel`, {  // Enter your IP address here
-        method: 'POST', 
-        mode: 'cors',
-        credentials : 'include',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({"channelName" : channelToJoin}) // body data type must match "Content-Type" header
-    })
+    const [searchData, setSearchData] = useState<channelSearchType[]>([]);
+    
+    // handle join channel action 
+    async function SendJoin(IsProtected : boolean) {
+      if (!IsProtected) {
+          console.log(IsProtected, " name ;", channelToJoin);
+            let response = await fetch(`http://localhost:4000/Chat/joinChannel`, { 
+            method: 'POST', 
+            mode: 'cors',
+            credentials : 'include',
+            headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({"channelName" : channelToJoin}) // body data type must match "Content-Type" header
+          })
+          console.log(response);
+        }
     console.log('clicked');
     }
+
+    // handle change
     const handleChange = (event: any) => {
       setMessage(event.target.value);
       handleClick();
       console.log('value is:', event.target.value);
     };
+
     let alert : string = "";
+
+    // handle click function ....
     async function handleClick() {
       let bodyData;
       let response = await fetch(`http://localhost:4000/Chat/channelSearch`, {  // Enter your IP address here
@@ -36,9 +52,11 @@ const ChannelSearch = () => {
         },
         body: JSON.stringify({"message" : message}) // body data type must match "Content-Type" header
     })
-    let data: string[] = await response.json() as string[];
+    let data: channelSearchType[] = await response.json() as channelSearchType[];
     setSearchData(data);
     }
+
+  // code to display
   return (
     <>
       {showButton && (
@@ -47,7 +65,7 @@ const ChannelSearch = () => {
         </button>
       )}
       <button
-        className="bg-orange-500 text-white active:bg-[#30313E]
+        className="bg-[#E58E27] text-white active:bg-[#30313E]
       font-bold px-2 py-1 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1"
         type="button"
         onClick={() => setShowModal(true)}
@@ -75,9 +93,12 @@ const ChannelSearch = () => {
                     {searchData && <div className="w-full h-full">
                         {searchData.map((name, index)=> {
                             return (
-                                <div key={index} className="flex flex-row w-full justify-between bg-white text-orange-500 p-1 border border-orange-500 m-1">
-                                    <p>{name}</p>
-                                    <button className="bg-orange-500 text-white rounded p-1" onClick={SendJoin} >JOIN</button>
+                                <div key={index} className="flex flex-row w-full justify-between bg-white text-[#E58E27] p-1 border border-[#E58E27] m-1">
+                                    <p>{name.name}</p>
+                                    <button className="bg-[#E58E27] text-white rounded p-1" onClick={()=> {
+                                      SetChannelToJoin(name.name);
+                                      SendJoin(name.isProtected);
+                                    }} >JOIN</button>
                                 </div>
                             )
                         })}
