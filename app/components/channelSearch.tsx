@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 
 export type channelSearchType = {
@@ -7,41 +7,63 @@ export type channelSearchType = {
 };
 
 const ChannelSearch = () => {
-    const [channelToJoin, SetChannelToJoin] = useState<string>("")
+    const [channelToJoin, SetChannelToJoin] = useState<channelSearchType>({
+      name : "",
+      isProtected : false,
+    })
     const [showModal, setShowModal] = useState<boolean>(false);
     const [message, setMessage] = useState<string>("");
     const [showButton, setShowButton] = useState<boolean>(false);
     const [searchData, setSearchData] = useState<channelSearchType[]>([]);
-    
-    // handle join channel action 
-    async function SendJoin(IsProtected : boolean) {
-      if (!IsProtected) {
-          console.log(IsProtected, " name ;", channelToJoin);
-            let response = await fetch(`http://localhost:4000/Chat/joinChannel`, { 
-            method: 'POST', 
-            mode: 'cors',
-            credentials : 'include',
-            headers: {
-                'Content-Type': 'application/json',
-              },
-              body: JSON.stringify({"channelName" : channelToJoin}) // body data type must match "Content-Type" header
-          })
-          console.log(response);
-        }
-    console.log('clicked');
-    }
+
+    useEffect(() => {
+      async function handlePassword(data: channelSearchType) {
+        SendJoin(data, "");
+      }
+
+      async function SendJoin(data : channelSearchType, password : string) {
+          console.log('SendJoin called with data:', data);
+          // if (!data.isProtected) {
+              try {
+                  let response = await fetch(`http://localhost:4000/Chat/joinChannel`, { 
+                      method: 'POST', 
+                      mode: 'cors',
+                      credentials : 'include',
+                      headers: {
+                          'Content-Type': 'application/json',
+                      },
+                      body: JSON.stringify({"channelName" : data.name})
+                  })
+                  console.log(response);
+              } catch (error) {
+                  console.error('Error:', error);
+              }
+              console.log('clicked');
+              setShowModal(false);
+              setSearchData([])
+              SetChannelToJoin({name : "", isProtected : false})
+              // }
+            }
+            if (channelToJoin?.name !== "") {
+              handlePassword(channelToJoin);
+              setShowModal(false);
+              setSearchData([])
+      }
+    }, [channelToJoin]);
+
+
 
     // handle change
-    const handleChange = (event: any) => {
+    const handleChange = async (event: any) => {
       setMessage(event.target.value);
-      handleClick();
+      await getSearchData();
       console.log('value is:', event.target.value);
     };
 
     let alert : string = "";
 
     // handle click function ....
-    async function handleClick() {
+    async function getSearchData() {
       let bodyData;
       let response = await fetch(`http://localhost:4000/Chat/channelSearch`, {  // Enter your IP address here
         method: 'POST', 
@@ -89,16 +111,19 @@ const ChannelSearch = () => {
                 </div>
                 <div className="flex flex-col items-center justify-end p-6 border-t border-solid border-blueGray-200 rounded-b">
                     <label>Search</label>
-                    <input type="text" className="gb-gray-500 text-black" onChange={handleChange}value={message} autoComplete="off"/>
+                    <input type="text" className="gb-gray-500 bg-[#E58E27] text-white w-full" onChange={handleChange} value={message} autoComplete="off"/>
                     {searchData && <div className="w-full h-full">
                         {searchData.map((name, index)=> {
                             return (
-                                <div key={index} className="flex flex-row w-full justify-between bg-white text-[#E58E27] p-1 border border-[#E58E27] m-1">
+                                <div key={index} className="flex flex-row w-full justify-between text-white p-1 border border-[#E58E27] m-1">
                                     <p>{name.name}</p>
-                                    <button className="bg-[#E58E27] text-white rounded p-1" onClick={()=> {
-                                      SetChannelToJoin(name.name);
-                                      SendJoin(name.isProtected);
-                                    }} >JOIN</button>
+                                    <input className={(name.isProtected === true ? "border border-black rounded bg-[#E58E27]" : "invisible")}/>
+                                    <button className="bg-[#E58E27] text-white rounded p-1" onClick={() => {
+                                      SetChannelToJoin({...name, name: name.name, isProtected: name.isProtected});
+                                      console.log('Button clicked');}}>
+                                      JOIN
+                                      </button>
+                                    {/* <button className="bg-[#E58E27] text-white rounded p-1" onClick={() => SendJoin(name)}>JOIN</button> */}
                                 </div>
                             )
                         })}
