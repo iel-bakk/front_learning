@@ -11,19 +11,21 @@ const ChannelSearch = () => {
       name : "",
       isProtected : false,
     })
+    const [password, setPassword] = useState<string>("");
     const [showModal, setShowModal] = useState<boolean>(false);
     const [message, setMessage] = useState<string>("");
     const [showButton, setShowButton] = useState<boolean>(false);
     const [searchData, setSearchData] = useState<channelSearchType[]>([]);
 
     useEffect(() => {
-      async function handlePassword(data: channelSearchType) {
-        SendJoin(data, "");
-      }
+      // async function handlePassword(data: channelSearchType) {
+      //   SendJoin(data);
+      // }
 
-      async function SendJoin(data : channelSearchType, password : string) {
+      async function SendJoin(data : channelSearchType) {
           console.log('SendJoin called with data:', data);
-          // if (!data.isProtected) {
+          console.log("pass Send");
+          
               try {
                   let response = await fetch(`http://localhost:4000/Chat/joinChannel`, { 
                       method: 'POST', 
@@ -32,7 +34,7 @@ const ChannelSearch = () => {
                       headers: {
                           'Content-Type': 'application/json',
                       },
-                      body: JSON.stringify({"channelName" : data.name})
+                      body: JSON.stringify({"channelName" : data.name, "password": password})
                   })
                   console.log(response);
               } catch (error) {
@@ -45,7 +47,8 @@ const ChannelSearch = () => {
               // }
             }
             if (channelToJoin?.name !== "") {
-              handlePassword(channelToJoin);
+              SendJoin(channelToJoin)
+              setPassword("");
               setShowModal(false);
               setSearchData([])
       }
@@ -57,6 +60,11 @@ const ChannelSearch = () => {
     const handleChange = async (event: any) => {
       setMessage(event.target.value);
       await getSearchData();
+      console.log('value is:', event.target.value);
+    };
+
+    const handlePasswordChange = async (event: any) => {
+      setPassword(event.target.value);
       console.log('value is:', event.target.value);
     };
 
@@ -117,7 +125,7 @@ const ChannelSearch = () => {
                             return (
                                 <div key={index} className="flex flex-row w-full justify-between text-white p-1 border border-[#E58E27] m-1">
                                     <p>{name.name}</p>
-                                    <input className={(name.isProtected === true ? "border border-black rounded bg-[#E58E27]" : "invisible")}/>
+                                    <input className={(name.isProtected === true ? "border border-black rounded bg-[#E58E27]" : "invisible")} onChange={handlePasswordChange}/>
                                     <button className="bg-[#E58E27] text-white rounded p-1" onClick={() => {
                                       SetChannelToJoin({...name, name: name.name, isProtected: name.isProtected});
                                       console.log('Button clicked');}}>
