@@ -18,10 +18,6 @@ const ChannelSearch = () => {
     const [searchData, setSearchData] = useState<channelSearchType[]>([]);
 
     useEffect(() => {
-      // async function handlePassword(data: channelSearchType) {
-      //   SendJoin(data);
-      // }
-
       async function SendJoin(data : channelSearchType) {
           console.log('SendJoin called with data:', data);
           console.log("pass Send");
@@ -95,7 +91,7 @@ const ChannelSearch = () => {
         </button>
       )}
       <button
-        className="bg-[#E58E27] text-white active:bg-[#30313E]
+        className="m-2 p-2 border border-[#E58E27] text-white active:bg-[#30313E]
       font-bold px-2 py-1 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1"
         type="button"
         onClick={() => setShowModal(true)}

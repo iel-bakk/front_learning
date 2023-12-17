@@ -61,6 +61,18 @@ function ChannelChat() {
     console.log("channel to render : ",channelToRender);
   }, [channelData, ChoosenChannel]);
   
+  async function handlLeave() {
+    let response = await fetch(`http://localhost:4000/Chat/leaveChannel`, {
+      method: 'POST', 
+      mode: 'cors',
+      credentials : 'include',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({"channelName" : ChoosenChannel})
+    })
+  }
+
   async function handleClick(name: string) {
     let response = await fetch(`http://localhost:4000/Chat/channel`, {
       method: 'POST', 
@@ -99,7 +111,10 @@ function ChannelChat() {
         </div>
 
     <div className='overflow-hidden w-[60%]  h-full flex flex-col items-center rounded-lg border border-[#E58E27] relative'>
-        <div className='w-full text-center border border-[#E58E27]'><h3 className='p-4'>{ChoosenChannel}</h3></div>
+        <div className='w-full flex flex-row justify-between text-center border border-[#E58E27]'>
+          <h3 className='p-4'>{ChoosenChannel}</h3>
+           <button className='m-2 p-2 rounded-lg border border-[#E58E27]' onClick={()=> {handlLeave()}} >Leave</button>
+        </div>
         <div className='w-full h-[80%] flex flex-col overflow-y-auto scrollbar-hide'>
         {channelToRender && Array.isArray(channelToRender.messages) && channelToRender.messages.map((channel, index) => (
           <div key={index} className={`flex flex-row w-[50%] rounded-lg p-2 m-4 object-contain  ${channel.sender === channelData.username ? 'message-sender bg-[#E58E27] self-start bg-opacity-50' : 'message-other bg-[#323232] self-end justify-end bg-opacity-50'}`}>
