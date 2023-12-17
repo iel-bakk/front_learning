@@ -35,7 +35,7 @@ function UserSettings() {
         useEffect(() => {
             fetchInfo();
             console.log(data?.friends);
-        }, [data])
+        }, [])
         
     return (
             <div className="h-full w-full flex flex-row items-center justify-around">
