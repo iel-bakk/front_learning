@@ -104,14 +104,8 @@ const channelMessagesSlice = createSlice({
         const { channelName, messages } = action.payload;
         const channel = state.entity.channels.find(channel => channel.channelName === channelName);
         if (channel) {
-          console.log("data recieved : ", messages.length);
-          
-          console.log("old array : ", channel.messages.length);  
           channel.messages = messages;
-          // console.log("updated chat from post : ", channel?.messages);
-          console.log("new array : ", channel.messages);
         }
-        
       },
       addMessageToChannel : (state, action) => {
         const message: channelMessages  = action.payload;
@@ -128,8 +122,6 @@ const channelMessagesSlice = createSlice({
       .addCase(fetchChannelData.fulfilled, (state, action) => {
         state.entity = action.payload;
         state.loading = false;
-
-
       })
       .addCase(fetchChannelData.rejected, (state, action) => {
         state.loading = false;
@@ -153,8 +145,14 @@ const channelMessagesSlice = createSlice({
         state.loading = true;
       })
       .addCase(leaveChannel.fulfilled, (state, action) => {
-        let index = state.entity.channels.indexOf({channelName : action.payload, messages : []})
-        state.entity.channels.splice(index);
+        // let index = state.entity.channels.indexOf({channelName : action.payload, messages : []})
+        let index : number = 0;
+        for (; index < state.entity.channels.length ; index++) {
+          if (state.entity.channels[index].channelName == action.payload) {
+            break ;
+          }
+        }
+        state.entity.channels.splice(index, 1);
         state.loading = false;
       })
       .addCase(leaveChannel.rejected, (state, action) => {
