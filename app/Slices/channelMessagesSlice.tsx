@@ -15,6 +15,7 @@ type channelConversation = {
 };
 
    type channelMessages = {
+    userId :  string,
     sender : string,
     content : string,
     channelName : string
