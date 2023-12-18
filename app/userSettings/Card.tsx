@@ -1,5 +1,7 @@
 import Modal from "../components/modal"
 import React from "react";
+import { useAppDispatch } from "../store/store";
+import { Action } from "../Slices/userSettingsSlice";
 
 type CardData = {
     user : string;
@@ -7,25 +9,21 @@ type CardData = {
     data : string[];
 };
 
-function Card(props : CardData) {
+type bodyData = {
+  username : string;
+}
 
+function Card(props : CardData) {
+    const dispatch = useAppDispatch();
     function handleClick(endpoint: string | undefined, username: string) {
         if (!endpoint)
           return
-        const bodyData = {
-          username: username
-        };
+        const bodyData : bodyData = {
+          username : username,
+        }
         console.log(`http://localhost:4000/Chat/${endpoint}`);
+        dispatch(Action({endpoint : endpoint, bodyData : bodyData}));
         
-        fetch(`http://localhost:4000/Chat/${endpoint}`, {
-          method: 'POST', 
-          mode: 'cors',
-          credentials : 'include',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(bodyData)
-        })
       }
       let myMap = new Map<string, string>();
       myMap.set("BandUsers","unBanUser");
@@ -46,7 +44,6 @@ function Card(props : CardData) {
                         {props.title != "Invitations" && <button className="text-red-600" onClick={() => handleClick(myMap.get(props.title), user)}>X</button>}
                         {props.title == "Invitations" && <button className="text-red-600" onClick={() => handleClick(myMap.get(`${props.title}x`), user)}>X</button>}
                         {props.title == "Invitations" && <button className="text-red-600" onClick={() => handleClick(myMap.get(props.title), user)}>Y</button>}
-                        
                     </div>
                     )
                 })}
