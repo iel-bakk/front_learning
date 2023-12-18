@@ -65,6 +65,7 @@ function ChannelChat() {
 
   async function handlLeave() {
     dispatch(leaveChannel(ChoosenChannel as string));
+    SetChoosenChannel("");
    }   
 
   async function handleClick(name: string) {
