@@ -1,4 +1,8 @@
+'use client';
 import React, { useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
+import { joinChannel } from "../Slices/channelMessagesSlice";
+import {useAppDispatch} from "../components/chatComp/channelData"
 
 
 export type channelSearchType = {
@@ -6,7 +10,9 @@ export type channelSearchType = {
   isProtected: boolean;
 };
 
+
 const ChannelSearch = () => {
+    const dispatch = useAppDispatch();
     const [channelToJoin, SetChannelToJoin] = useState<channelSearchType>({
       name : "",
       isProtected : false,
@@ -16,39 +22,17 @@ const ChannelSearch = () => {
     const [message, setMessage] = useState<string>("");
     const [showButton, setShowButton] = useState<boolean>(false);
     const [searchData, setSearchData] = useState<channelSearchType[]>([]);
-
+   
+   
     useEffect(() => {
-      async function SendJoin(data : channelSearchType) {
-          console.log('SendJoin called with data:', data);
-          console.log("pass Send");
-          
-              try {
-                  let response = await fetch(`http://localhost:4000/Chat/joinChannel`, { 
-                      method: 'POST', 
-                      mode: 'cors',
-                      credentials : 'include',
-                      headers: {
-                          'Content-Type': 'application/json',
-                      },
-                      body: JSON.stringify({"channelName" : data.name, "password": password})
-                  })
-                  console.log(response);
-              } catch (error) {
-                  console.error('Error:', error);
-              }
-              console.log('clicked');
-              setShowModal(false);
-              setSearchData([])
-              SetChannelToJoin({name : "", isProtected : false})
-              // }
-            }
-            if (channelToJoin?.name !== "") {
-              SendJoin(channelToJoin)
-              setPassword("");
-              setShowModal(false);
-              setSearchData([])
+      if (channelToJoin?.name !== "") {
+        dispatch(joinChannel({data: channelToJoin, password: password}));
+        setPassword("");
+        setShowModal(false);
+        setSearchData([]);
       }
-    }, [channelToJoin]);
+     }, [channelToJoin, dispatch]);
+     
 
 
 

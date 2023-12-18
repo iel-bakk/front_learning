@@ -4,7 +4,7 @@ import { WebsocketContext } from '../Contexts/socket';
 import { useSelector } from "react-redux";
 import { RootState, AppDispatch } from "../store/store";
 import { useDispatch } from "react-redux";
-import { addMessageToChannel, fetchChannelData, updateChannelMessages } from '../Slices/channelMessagesSlice';
+import { addMessageToChannel, fetchChannelData, leaveChannel, updateChannelMessages } from '../Slices/channelMessagesSlice';
 import Link from 'next/link';
 import ChannelSearch from '../components/channelSearch';
 
@@ -31,6 +31,7 @@ function ChannelChat() {
   const [inputValue, setInputValue] = useState('');
   const [redirecting, setRedirection] = useState<boolean>(false);
   const dispatch = useDispatch<AppDispatch>();
+  // const dispatch = useAppDispatch();
 
   let channelData: channelNames = useSelector((state: RootState) => state.channelMessages.entity);
  
@@ -61,17 +62,10 @@ function ChannelChat() {
     console.log("channel to render : ",channelToRender);
   }, [channelData, ChoosenChannel]);
   
+
   async function handlLeave() {
-    let response = await fetch(`http://localhost:4000/Chat/leaveChannel`, {
-      method: 'POST', 
-      mode: 'cors',
-      credentials : 'include',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({"channelName" : ChoosenChannel})
-    })
-  }
+    dispatch(leaveChannel(ChoosenChannel as string));
+   }   
 
   async function handleClick(name: string) {
     let response = await fetch(`http://localhost:4000/Chat/channel`, {
