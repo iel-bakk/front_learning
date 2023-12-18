@@ -111,10 +111,10 @@ function ChannelChat() {
         </div>
 
     <div className='overflow-hidden w-[60%]  h-full flex flex-col items-center rounded-lg border border-[#E58E27] relative'>
-        <div className='w-full flex flex-row justify-between text-center border border-[#E58E27]'>
+        {ChoosenChannel && <div className='w-full flex flex-row justify-between text-center border border-[#E58E27]'>
           <h3 className='p-4'>{ChoosenChannel}</h3>
            <button className='m-2 p-2 rounded-lg border border-[#E58E27]' onClick={()=> {handlLeave()}} >Leave</button>
-        </div>
+        </div>}
         <div className='w-full h-[80%] flex flex-col overflow-y-auto scrollbar-hide'>
         {channelToRender && Array.isArray(channelToRender.messages) && channelToRender.messages.map((channel, index) => (
           <div key={index} className={`flex flex-row w-[50%] rounded-lg p-2 m-4 object-contain  ${channel.sender === channelData.username ? 'message-sender bg-[#E58E27] self-start bg-opacity-50' : 'message-other bg-[#323232] self-end justify-end bg-opacity-50'}`}>
@@ -123,7 +123,7 @@ function ChannelChat() {
           </div>
         ))}
         </div>
-        <div className='absolute bottom-0 w-full flex-end rounded-lg border  border-black flex'>
+        {ChoosenChannel && <div className='absolute bottom-0 w-full flex-end rounded-lg border  border-black flex'>
         <input 
          className="w-full text-white rounded-lg border border-black bg-[#323232] p-4"
          value={inputValue}
@@ -142,7 +142,7 @@ function ChannelChat() {
   >
      Send
   </button>
-        </div>
+        </div>}
     </div>
    </div>
    
