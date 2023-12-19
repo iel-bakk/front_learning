@@ -1,11 +1,19 @@
 import React, { useState } from "react";
+import { useAppDispatch } from "../store/store";
+import { Action } from "../Slices/userSettingsSlice";
+
 
 type ModalType = {
     content : string;
     title : string;
 };
 
+type bodyData = {
+  username : string;
+}
+
 const Modal = (props: ModalType) => {
+  const dispatch = useAppDispatch();
   const [showModal, setShowModal] = useState(false);
   const [message, setMessage] = useState('');
   const [showButton, setShowButton] = useState(false);
@@ -16,29 +24,14 @@ const Modal = (props: ModalType) => {
       console.log('value is:', event.target.value);
     };
     let alert : string = "";
+    let bodyData : bodyData = {
+      username : message
+    }
     async function handleClick(endpoint: string | undefined) {
       setShowModal(false);
       if (!endpoint)
-        return
-      
-      const bodyData  = {
-          username : message // use message state variable as username
-      }
-      console.log(`http://localhost:4000/Chat/${endpoint}`);
-      
-      let response = await fetch(`http://localhost:4000/Chat/${endpoint}`, {  // Enter your IP address here
-        method: 'POST', 
-        mode: 'cors',
-        credentials : 'include',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(bodyData) // body data type must match "Content-Type" header
-      })
-      if (response.status == 200 || response.status == 400) {
-          setShowButton(true); // Show the button when the response status is 200 or 400
-          alert = (response.status == 200) ? "Success ..." : "Failed !...";
-      }
+      return
+      dispatch(Action({endpoint : endpoint, bodyData : bodyData}));
     }
   let myMap = new Map<string, string>();
       myMap.set("BandUsers","BanUser");

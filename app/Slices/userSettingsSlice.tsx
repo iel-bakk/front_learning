@@ -91,6 +91,11 @@ const userSlice = createSlice({
         let index = state.invitations.indexOf(action.payload.username)
         state.invitations.splice(index, 1);
       }
+      else if (action.payload.action == "Ban") {
+        let index = state.friends.indexOf(action.payload.username)
+        state.friends.splice(index, 1);
+        state.bandUsers.push(action.payload.username);
+      }
     });
    },
 
